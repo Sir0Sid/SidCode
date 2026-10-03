@@ -102,6 +102,35 @@ function main() {
   );
   check('and one of them names Sid\u2019s own', forkNamed, 'no file under factory/ names github.com/Sir0Sid/ - is the rewrite still there?');
 
+  // The record has to be true about what it claims. A file listed as rewritten must be a file that
+  // actually names Sid's fork - the first version of the taker listed a file it had deliberately
+  // left alone, and a record that says something untrue is worse than no record at all.
+  if (fs.existsSync(recordFile)) {
+    // Everything after the `rewritten` label, which is the last line of the record: the list of
+    // files is one name per line below it, so the split is on the label rather than on the line.
+    const claimed = fs
+      .readFileSync(recordFile, 'utf8')
+      .split(/^rewritten\s+/m)[1]
+      .split('\n')
+      .map(name => name.trim())
+      .filter(name => name.length > 0 && name !== 'nothing');
+
+    claimed.forEach(name => {
+      const file = path.join(factory, name);
+
+      check(
+        `the record claims ${name} was rewritten, and it exists`,
+        fs.existsSync(file),
+        `factory/FACTORY says ${name} was rewritten, and there is no such file`
+      );
+      check(
+        `and ${name} does name Sid's fork`,
+        fs.existsSync(file) && /github\.com\/Sir0Sid\//i.test(fs.readFileSync(file, 'utf8')),
+        `factory/FACTORY claims ${name} was rewritten, and it does not name Sid's fork - the record is claiming work that was not done`
+      );
+    });
+  }
+
   // The build has to prefer the factory, and say which path it took.
   const build = source('build.sh');
   check(

@@ -96,7 +96,12 @@ find "${FACTORY}" -type f \
   -not -path '*/node_modules/*' > /tmp/sidcode-factory-files.txt
 
 while IFS= read -r file; do
-  if grep -q -i 'microsoft/vscode' "${file}"; then
+  # No guard here. The program above decides what is a fetch and what is a link, prints only what it
+  # changed, and says nothing at all when there was nothing to change - so the loop believes its
+  # output and nothing else. An earlier version kept a mention-check around it, which is true for a
+  # file that merely *links* to Microsoft, and the record then claimed a file had been rewritten
+  # when it had not. A record that says something untrue is worse than no record.
+  if [ -f "${file}" ]; then
     # The decision and the report both come from the program: it knows which mentions are fetches
     # and which are links into a repository, and a report naming a file it did not change is worse
     # than no report at all. The program is a quoted heredoc rather than a `node -e '...'`, so that
@@ -136,10 +141,13 @@ console.log('  the source fetch in ' + shown + ':');
 lines.forEach(line => console.log('    ' + line.trim()));
 SIDCODE_JS
 
-    node /tmp/sidcode-rewrite.cjs "${file}" "${VSCODE_REPO}" "${file#${FACTORY}/}"
+    out="$(node /tmp/sidcode-rewrite.cjs "${file}" "${VSCODE_REPO}" "${file#${FACTORY}/}")"
 
-    CHANGED_LINES="${CHANGED_LINES}${file#${FACTORY}/}
+    if [ -n "${out}" ]; then
+      say "${out}"
+      CHANGED_LINES="${CHANGED_LINES}${file#${FACTORY}/}
 "
+    fi
   fi
 done < /tmp/sidcode-factory-files.txt
 
