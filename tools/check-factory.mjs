@@ -81,12 +81,20 @@ function main() {
     check('and which repository the source is fetched from', /vscode-from\s+https?:\/\/\S+/.test(record), 'factory/FACTORY does not name the repository the source comes from');
   }
 
-  // The whole point: nothing in the machinery still reaches for Microsoft's repository.
-  const reaching = factorySources().filter(file => /(^|[^a-z])microsoft\/vscode([^a-z]|$)/i.test(fs.readFileSync(file, 'utf8')));
+  // The whole point: nothing in the machinery still *fetches* from Microsoft's repository. A link
+  // into it is another matter - `release.sh` builds release notes that point at the upstream commit,
+  // which is exactly what those notes are for - so what is looked for is a bare repository URL, with
+  // nothing after the name but a `.git` or the end of it.
+  const bareRepo = /(^|[^a-z])(https?:\/\/github\.com\/)?microsoft\/vscode(\.git)?(?![\/\w.-])/i;
+  const reaching = factorySources().filter(file => {
+    const text = fs.readFileSync(file, 'utf8');
+    return text.split('\n').some(line => bareRepo.test(line));
+  });
+  const linking = factorySources().filter(file => /github\.com\/microsoft\/vscode\/(tree|blob|commit)/i.test(fs.readFileSync(file, 'utf8')));
   check(
     'the machinery fetches the source from Sid\u2019s fork and nowhere else',
     reaching.length === 0,
-    `these still name Microsoft's repository: ${reaching.map(file => path.relative(root, file)).join(', ')} - run tools/take-the-factory.sh again, or fix the line it prints`
+    `these still fetch from Microsoft's repository: ${reaching.map(file => path.relative(root, file)).join(', ')} - run tools/take-the-factory.sh again, or fix the line it prints`
   );
 
   const forkNamed = factorySources().some(file =>
@@ -120,6 +128,9 @@ function main() {
   console.log('  in this repo, taken from:');
   record.forEach(line => console.log(`    ${line}`));
   console.log('  and the build will use it without fetching the machinery.');
+  if (linking.length > 0) {
+    console.log(`  links into Microsoft's repository are left alone, as they should be: ${linking.map(file => path.relative(root, file)).join(', ')}`);
+  }
 }
 
 main();

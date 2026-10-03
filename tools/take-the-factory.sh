@@ -97,22 +97,47 @@ find "${FACTORY}" -type f \
 
 while IFS= read -r file; do
   if grep -q -i 'microsoft/vscode' "${file}"; then
-    say "  rewriting the source fetch in ${file#${FACTORY}/}:"
-    grep -n -i 'microsoft/vscode' "${file}" | sed 's/^/    /'
-    # Case-insensitively, and in node: the line that actually fetches the source says
-    # `Microsoft/vscode`, with capitals, and a case-sensitive pass walks straight past the one line
-    # the whole exercise is about. Node is here anyway - the build needs it.
-    node -e '
-const fs = require("fs");
-const file = process.argv[1];
-const url = process.argv[2];
-const before = fs.readFileSync(file, "utf8");
-// The whole URL, domain included, when there is one: their line reads
-// `https://github.com/Microsoft/vscode.git`, so replacing only the path would leave the domain
-// in front of the replacement and the result would be `https://github.com/https://github.com/...`.
-const after = before.replace(/(https?:\/\/github\.com\/)?Microsoft\/vscode(\.git)?/gi, url);
-if (after !== before) { fs.writeFileSync(file, after); }
-' "${file}" "${VSCODE_REPO}"
+    # The decision and the report both come from the program: it knows which mentions are fetches
+    # and which are links into a repository, and a report naming a file it did not change is worse
+    # than no report at all. The program is a quoted heredoc rather than a `node -e '...'`, so that
+    # nothing inside it - an apostrophe in a comment, a backtick, a dollar sign - is read by the
+    # shell. That mistake was made three times while this was written; this is the end of it.
+    cat > /tmp/sidcode-rewrite.cjs <<'SIDCODE_JS'
+const fs = require('fs');
+
+const file = process.argv[2];
+const url = process.argv[3];
+const shown = process.argv[4];
+const before = fs.readFileSync(file, 'utf8');
+
+// Only a bare repository URL, and not a link into one. The line that fetches the source reads
+// `https://github.com/Microsoft/vscode.git`, with capitals, and replacing just the path would leave
+// the domain in front of the replacement: `https://github.com/https://github.com/...`.
+//
+// `release.sh` builds release notes that point at Microsoft commit pages - a URL with `/tree/` and
+// a hash after the repository name. Those are correct as they stand: the link describes the upstream
+// commit and fetches nothing, so it is left alone. A mention is rewritten only when nothing follows
+// the repository name but a `.git` or the end of it.
+//
+// Two patterns, deliberately: a global one used with `test` alternates true and false as it walks a
+// string, so the asking is done with a pattern that carries no such state.
+const isFetch = /(https?:\/\/github\.com\/)?Microsoft\/vscode(\.git)?(?![\/\w.-])/i;
+const fetches = /(https?:\/\/github\.com\/)?Microsoft\/vscode(\.git)?(?![\/\w.-])/gi;
+
+const lines = before.split('\n').filter(line => isFetch.test(line));
+
+if (lines.length === 0) {
+  process.exit(0);
+}
+
+fs.writeFileSync(file, before.replace(fetches, url));
+
+console.log('  the source fetch in ' + shown + ':');
+lines.forEach(line => console.log('    ' + line.trim()));
+SIDCODE_JS
+
+    node /tmp/sidcode-rewrite.cjs "${file}" "${VSCODE_REPO}" "${file#${FACTORY}/}"
+
     CHANGED_LINES="${CHANGED_LINES}${file#${FACTORY}/}
 "
   fi

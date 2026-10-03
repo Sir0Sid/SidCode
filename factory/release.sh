@@ -22,7 +22,7 @@ if [[ $( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" 2>&1
   VERSION="${RELEASE_VERSION%-insider}"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    NOTES="update vscode to [${MS_COMMIT}](https://github.com/Sir0Sid/sidecode-1/tree/${MS_COMMIT})"
+    NOTES="update vscode to [${MS_COMMIT}](https://github.com/microsoft/vscode/tree/${MS_COMMIT})"
 
     replace "s|@@APP_NAME@@|${APP_NAME}|g" release_notes.md
     replace "s|@@APP_NAME_LC@@|${APP_NAME_LC}|g" release_notes.md
@@ -30,7 +30,7 @@ if [[ $( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" 2>&1
     replace "s|@@ASSETS_REPOSITORY@@|${ASSETS_REPOSITORY}|g" release_notes.md
     replace "s|@@BINARY_NAME@@|${BINARY_NAME}|g" release_notes.md
     replace "s|@@MS_TAG@@|${MS_COMMIT}|g" release_notes.md
-    replace "s|@@MS_URL@@|https://github.com/Sir0Sid/sidecode-1/tree/${MS_COMMIT}|g" release_notes.md
+    replace "s|@@MS_URL@@|https://github.com/microsoft/vscode/tree/${MS_COMMIT}|g" release_notes.md
     replace "s|@@QUALITY@@|-insider|g" release_notes.md
     replace "s|@@RELEASE_NOTES@@||g" release_notes.md
     replace "s|@@VERSION@@|${VERSION}|g" release_notes.md
