@@ -52,16 +52,50 @@ server definition. `.gitignore` keeps out the two things that must not be commit
 is gigabytes of checkout and built app, and the packed archives - while the VSIX files stay in, since
 they are what gets built into the editor.
 
-Create the repository **empty** on GitHub (no README, no .gitignore, or the first push conflicts),
-then, from this folder:
+Create the repository on GitHub first, and **without** a README or a licence: either of those is a
+commit of GitHub's, and with one there the first push is refused as non-fast-forward. If it happened
+anyway, `--force` on that first push is what settles it - there is nothing else in the repository to
+lose.
+
+Git needs to know who is committing, once per machine:
 
 ```bash
-git init -b main
+git config --global user.name "Simon G"
+git config --global user.email "321107679+Sir0Sid@users.noreply.github.com"
+git config --global init.defaultBranch main
+```
+
+That address is GitHub's own private one for the account, so commits link to `Sir0Sid` without a real
+email being published. Then, from this folder:
+
+```bash
+git init
 git add -A
 git commit -m "SidCode: the build, the patches, the defaults and the tools"
 git remote add origin git@github.com:Sir0Sid/SidCode.git
-git push -u origin main
+git push -u origin main --force
 ```
+
+Two things go wrong on a fresh machine, and neither message says what to do about it:
+
+* **`src refspec main does not match any`** - this git made `master`. Rename it before pushing, since
+  the push names a branch that does not exist: `git branch -m master main`. Pushing `master` instead
+  leaves the repository's default branch pointing at whatever was there before, with the new branch
+  beside it.
+* **`Permission denied (publickey)`** - GitHub has no key of this machine's. One key per machine:
+
+  ```bash
+  ssh-keygen -t ed25519 -C "321107679+Sir0Sid@users.noreply.github.com" -f ~/.ssh/id_ed25519 -N ""
+  cat ~/.ssh/id_ed25519.pub          # this whole line goes to GitHub, not the fingerprint
+  ssh -T git@github.com              # should greet the account by name
+  ```
+
+  On GitHub: Settings -> SSH and GPG keys -> New SSH key, type **Authentication**, and paste the
+  single line of the `.pub` file. GitHub derives the fingerprint and shows it under the box as the
+  key is pasted - that is it confirming, not a field to fill in. The key file **without** `.pub`
+  never leaves the machine. To avoid keys altogether, use a token over HTTPS instead:
+  `git remote set-url origin https://github.com/Sir0Sid/SidCode.git`, then paste a personal access
+  token with `contents: write` where a password is asked for.
 
 The name is load-bearing beyond the repository: `branding/product.sidcode.json` points its issue,
 feature and licence links at `github.com/Sir0Sid/SidCode`, and `server/artifact.json` points the

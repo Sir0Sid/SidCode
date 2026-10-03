@@ -1,4 +1,0 @@
-# The colour files are where they are kept, comments and all; the .theme.json beside each one
-# is what is generated from it and what the editor loads.
-themes/*.json
-!themes/*.theme.json
