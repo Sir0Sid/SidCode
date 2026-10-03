@@ -1,0 +1,64 @@
+{
+  "//": "Where every extension built into SidCode comes from, and under what licence - the record behind extensions/builtin.txt's rule. `tools/check-provenance.mjs` compares the two: an entry with no record fails, a recorded licence that is not MIT fails, and a pin that moved without the record being updated fails. `evidence` is for the case where the licence is real but is not declared where a machine looks.",
+  "willibrandon.systemd": {
+    "version": "0.4.4",
+    "licence": "MIT",
+    "upstream": "https://github.com/willibrandon/vscode-systemd"
+  },
+  "ms-python.python": {
+    "version": "2026.4.0",
+    "licence": "MIT",
+    "upstream": "https://github.com/Microsoft/vscode-python"
+  },
+  "ms-python.debugpy": {
+    "version": "2026.6.0",
+    "licence": "MIT",
+    "upstream": "https://github.com/microsoft/vscode-python-debugger"
+  },
+  "ms-pyright.pyright": {
+    "version": "1.1.402",
+    "licence": "MIT",
+    "upstream": "https://github.com/Microsoft/pyright"
+  },
+  "charliermarsh.ruff": {
+    "version": "2026.84.0",
+    "licence": "MIT",
+    "upstream": "https://github.com/astral-sh/ruff-vscode"
+  },
+  "phpactor.vscode-phpactor": {
+    "version": "1.7.8",
+    "licence": "MIT",
+    "upstream": "https://github.com/phpactor/vscode-phpactor"
+  },
+  "xdebug.php-debug": {
+    "version": "1.40.2",
+    "licence": "MIT",
+    "upstream": "https://github.com/xdebug/vscode-php-debug"
+  },
+  "dbaeumer.vscode-eslint": {
+    "version": "3.0.34",
+    "licence": "MIT",
+    "upstream": "https://github.com/Microsoft/vscode-eslint"
+  },
+  "esbenp.prettier-vscode": {
+    "version": "12.4.0",
+    "licence": "MIT",
+    "upstream": "https://github.com/prettier/prettier-vscode"
+  },
+  "stylelint.vscode-stylelint": {
+    "version": "2.2.1",
+    "licence": "MIT",
+    "upstream": "https://github.com/stylelint/vscode-stylelint"
+  },
+  "bradlc.vscode-tailwindcss": {
+    "version": "0.16.0",
+    "licence": "MIT",
+    "upstream": "https://github.com/tailwindlabs/tailwindcss-intellisense"
+  },
+  "jeanp413.open-remote-ssh": {
+    "version": "0.3.1",
+    "licence": "MIT",
+    "upstream": "https://github.com/jeanp413/open-remote-ssh",
+    "evidence": "Neither the manifest nor the registry declares a licence; the repository is MIT and a LICENSE.txt ships inside the VSIX, which is what the build unpacks."
+  }
+}

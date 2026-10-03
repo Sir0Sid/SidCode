@@ -192,6 +192,7 @@ node tools/make-defaults.mjs            writes defaults/package.json and reports
 node tools/check-themes-menu.mjs        checks the Themes menu: every colour set reachable,
                                         every entry a command, the runtime and the manifest agree
 node tools/check-branding.mjs           checks the name, the folder, the links, and the services it uses
+node tools/check-provenance.mjs         checks every built-in is MIT, recorded and still at its pin
 ./build.sh --brand-only <app>           puts the result into an app already built
 ```
 

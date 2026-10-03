@@ -67,7 +67,11 @@ and builds. Two things are wrapped around it:
   with SidCode's fields on top, and that is what the checkout gets. The name therefore survives
   every prepare step rather than being overwritten by the next one.
 * **The built-in extensions.** `sidcode-defaults` and the SFTP VSIX are copied into the built
-  app's `resources/app/extensions` afterwards.
+  app's `resources/app/extensions` afterwards, and the ones from the gallery are listed in
+  `extensions/builtin.txt` with their versions pinned - each of them recorded with its licence and
+  its upstream in `extensions/provenance.json`, which `node tools/check-provenance.mjs` compares
+  against that list. A new built-in with no record fails the check, and so does a licence this
+  product may not ship.
 
 The build is the expensive half: Microsoft's `vscode` source (1.5-3 GB), 30-50 GB of free disk
 and an hour or more. Dependencies are VSCodium's own: node (their `.nvmrc`), `jq`, `git`,
@@ -94,6 +98,7 @@ the editor until somebody clicks the thing that does not work:
 
 ```bash
 node tools/check-branding.mjs           the name, the folder, the links, and which services it uses
+node tools/check-provenance.mjs         every built-in extension: MIT, recorded, upstream, still pinned
 node tools/check-themes-menu.mjs         the Themes menu: every colour set reachable, the runtime agrees
 node tools/check-remote.mjs              the remote half: the settings and the server artifact agree
 ```
