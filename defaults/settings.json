@@ -1,0 +1,93 @@
+{
+    "files.autoSave": "afterDelay",
+    "files.associations": {
+        // Sid's own extensions: a .sid file is an nginx config, as are .conf.sid and .conf.*
+        "*.sid": "nginx",
+        "*.conf.sid": "nginx",
+        "*.conf.*": "nginx",
+
+        // nginx by name and by where it lives. The language id is "nginx", provided by
+        // sidcode-languages, which is built in - the file patterns that end in a glob cannot be
+        // expressed by the extension itself, which is why they are named here.
+        "nginx.conf": "nginx",
+        "**/sites-available/*": "nginx",
+        "**/sites-enabled/*": "nginx",
+        "**/conf.d/*.conf": "nginx",
+
+        // Not nginx, though they wear the same extension: php-fpm's pool config is INI-shaped
+        "php-fpm.conf": "ini",
+        "*.pool.conf": "ini",
+
+        // systemd units and the rest of the family. willibrandon.systemd claims these itself -
+        // they are named here too so that a unit file keeps its language and its colours if that
+        // extension is ever taken out of extensions/builtin.txt.
+        "*.service": "systemd-unit",
+        "*.socket": "systemd-unit",
+        "*.timer": "systemd-unit",
+        "*.target": "systemd-unit",
+        "*.mount": "systemd-unit",
+        "*.automount": "systemd-unit",
+        "*.path": "systemd-unit",
+        "*.slice": "systemd-unit",
+        "*.scope": "systemd-unit",
+        "*.device": "systemd-unit",
+        "*.swap": "systemd-unit",
+        "*.network": "systemd-network",
+        "*.netdev": "systemd-network",
+        "*.link": "systemd-network",
+        "*.container": "podman-quadlet",
+        "*.volume": "podman-quadlet",
+        "*.kube": "podman-quadlet",
+
+        // Your own go here - any pattern, then any language id. See COMMANDS.md:
+        //   "*.sidconf": "nginx"
+    },
+    "material-icon-theme.files.associations": {
+        "*.conf.sid": "nginx"
+    },
+    "workbench.iconTheme": "vscode-material-theme-icons-deepforest-arrows",
+    "window.customTitleBarVisibility": "windowed",
+    "window.autoDetectHighContrast": false,
+    "workbench.editor.centeredLayoutFixedWidth": true,
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.autoLockGroups": {
+        "default": true
+    },
+    "workbench.settings.applyToAllProfiles": [
+        "workbench.editor.centeredLayoutFixedWidth"
+    ],
+    "redhat.telemetry.enabled": false,
+    "sftp.downloadWhenOpenInRemoteExplorer": true,
+
+    // The editor is built by hand, from a pinned VSCodium tag, and put in place with `--brand-only`
+    // or the installer. There is no SidCode update service to ask, and the one this build would
+    // otherwise ask is VSCodium's - inherited from the source it is built from, because the
+    // branding does not name one. Left as it is, an update check could deliver a *VSCodium* build
+    // over this one. So the app-update check is off, which is also just true: updates here come
+    // from rebuilding.
+    //
+    // Extension updates are separate and still on (`extensions.autoUpdate`), from Open VSX. And the
+    // day there is an update channel of your own, this line goes away and `updateUrl` in
+    // branding/product.sidcode.json names it.
+    "update.mode": "none",
+
+    // Working on somebody else's machine: whoever has a login on your host installs SidCode on
+    // their own PC and opens the project there, rather than a copy of the files on their own disk.
+    // The editor is a thin client in that arrangement - the terminals and the language servers run
+    // on the host, and the project never leaves it.
+    //
+    // No settings for it are written here, and that is deliberate: the two that matter are the
+    // server component's download URL and its version, and both are written from
+    // `server/artifact.json` when this manifest is generated (`node tools/make-defaults.mjs`).
+    // Writing the URL here as well would be a second copy of it, and the second copy is always the
+    // one that goes stale. `remote.SSH.serverVersion` is `match`: the client and the host's server
+    // component must be the same build.
+    //
+    // The languages and linters built into the editor - pyright and ruff for Python, phpactor for
+    // PHP, eslint, prettier, stylelint, Tailwind, systemd - travel with the *server* build too, so
+    // a host has them without anything being installed on it. `remote.SSH.defaultExtensions` is the
+    // hook for anything wanted on hosts beyond those, and `remote.SSH.remotePlatform` maps a host
+    // to `linux` so the first connection does not have to be asked.
+    "remote.SSH.connectTimeout": 60
+}

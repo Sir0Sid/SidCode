@@ -1,0 +1,41 @@
+# What SidCode builds into itself, from the open gallery (Open VSX).
+#
+# One `publisher.name@version` per line. build.sh downloads each one, unpacks it into the app's
+# resources/app/extensions/ and reports the versions it put there - so this list is the record,
+# and changing a version is the whole of an update. They are cached under build/vsix/, so a
+# rebuild does not fetch them twice and `--no-download` builds from what is already there.
+#
+# MIT only. Everything here ships inside the editor, so anything whose licence forbids that is
+# not a candidate however good it is - Intelephense, DevSense PhpTools, Pylance. Those are
+# installed for Sid personally instead, through extensions/install.txt.
+#
+# Nothing is listed for JS/TS, CSS, HTML, JSON or Markdown: the editor's own language services
+# for those are built in already, and newer than anything the gallery has.
+
+# systemd units, quadlet containers, udev rules, tmpfiles, sysusers and network files (MIT)
+willibrandon.systemd@0.4.4
+
+# Python: the editor side, the debugger, a type checker and the linter (all MIT).
+# Pylance is not on this gallery and is not shippable, so pyright is the type checker here.
+ms-python.python@2026.4.0
+ms-python.debugpy@2026.6.0
+ms-pyright.pyright@1.1.402
+charliermarsh.ruff@2026.84.0
+
+# PHP: a language server that is ours to ship, and the debugger (both MIT)
+phpactor.vscode-phpactor@1.7.8
+xdebug.php-debug@1.40.2
+
+# Web: lint, format, and Tailwind (all MIT)
+dbaeumer.vscode-eslint@3.0.34
+esbenp.prettier-vscode@12.4.0
+stylelint.vscode-stylelint@2.2.1
+bradlc.vscode-tailwindcss@0.16.0
+
+# Working on a project that lives on another machine: the editor here, the files and the run of
+# them there. Microsoft's own Remote-SSH is not an option - it is not on the open gallery at all
+# ("Extension not found"), and its licence keeps it to Microsoft's builds - so this is the community
+# port, which is MIT (its repository and the LICENSE.txt inside the VSIX) and is built to work with
+# VSCodium. It is also the half that can be made entirely Sid's: it fetches the server component
+# from a URL it is given, and `server/artifact.json` gives it his.
+jeanp413.open-remote-ssh@0.3.1

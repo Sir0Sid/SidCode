@@ -1,0 +1,46 @@
+{
+  "name": "sidcode-languages",
+  "displayName": "SidCode Languages",
+  "description": "The languages SidCode provides itself: nginx, and a place for the next one.",
+  "publisher": "Sir0Sid",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.64.2"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "nginx",
+        "aliases": [
+          "nginx",
+          "NGINX",
+          "Nginx"
+        ],
+        "extensions": [
+          ".conf",
+          ".conf.template",
+          ".conf.default"
+        ],
+        "filenames": [
+          "nginx.conf",
+          "mime.types",
+          "fastcgi_params",
+          "scgi_params",
+          "uwsgi_params",
+          "proxy_params"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "nginx",
+        "scopeName": "source.nginx",
+        "path": "./syntaxes/nginx.tmLanguage.json"
+      }
+    ]
+  }
+}

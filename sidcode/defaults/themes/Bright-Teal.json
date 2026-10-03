@@ -1,0 +1,122 @@
+{
+    "name": "Sid's Bright Teal",
+    // Simon's file said "type": "light" while every surface in it is dark
+    // (#005a56 title bar, #0b1716 editor). The type is not decoration: it
+    // decides which of VS Code's defaults everything he did NOT name
+    // inherits from, so "light" would have dropped light-mode inputs,
+    // dropdowns and scrollbars into a dark editor. Changed to "dark";
+    // put it back if that was deliberate.
+    "type": "dark",
+    "colors": {
+            // Main Top Title Bar / Banner (Bright, clear teal)
+            "titleBar.activeBackground": "#005a56",
+            "titleBar.activeForeground": "#ffffff",
+            "titleBar.inactiveBackground": "#004d49",
+
+            // Far Left Menu / Activity Bar (Crisp teal instead of dark black)
+            "activityBar.background": "#00403d",
+            "activityBar.foreground": "#ffffff",
+            "activityBar.inactiveForeground": "#a3d1cf",
+            "activityBar.activeBorder": "#00ffea",
+            "activityBarBadge.background": "#00ffea",
+            "activityBarBadge.foreground": "#000000",
+
+            // Left File Sidebar (Lightened up to a distinct, clean slate-teal)
+            "sideBar.background": "#142625",
+            "sideBar.foreground": "#e0f2f1",
+            "sideBarTitle.foreground": "#00ffea",
+            "sideBarSectionHeader.background": "#1a3331",
+            "sideBarSectionHeader.foreground": "#00ffea",
+
+            // Main Code Editor Windows
+            "editor.background": "#0b1716",
+            "lineHighlightBackground": "#162e2c",
+            "editorLineNumber.activeForeground": "#00ffea",
+
+            // Top File Tabs (High contrast and clear)
+            "tab.activeBackground": "#1d3d3a",
+            "tab.activeForeground": "#00ffea",
+            "tab.activeBorder": "#00ffea",
+            "tab.inactiveBackground": "#101f1e",
+            "tab.inactiveForeground": "#80cbc4",
+
+            // Bottom Status Bar
+            "statusBar.background": "#005a56",
+            "statusBar.foreground": "#ffffff",
+
+            // Lists & Selected File Items
+            "list.activeSelectionBackground": "#007a74",
+            "list.activeSelectionForeground": "#ffffff",
+            "list.hoverBackground": "#1d3d3a"
+        },
+
+    // ── NOT PART OF SIMON'S FILE ────────────────────────────────────
+    // His colour set names the workbench surfaces and nothing else. A
+    // theme with no token colours leaves every language rendered flat -
+    // one colour of text, no syntax - so this block was written to go
+    // with it, from his own bright teal (#00ffea) and the lighter
+    // greens and blues that sit beside it. Delete this block and his
+    // theme is exactly as he wrote it.
+    "tokenColors": [
+        {
+            "scope": ["comment", "punctuation.definition.comment"],
+            "settings": { "foreground": "#6fa39f", "fontStyle": "italic" }
+        },
+        {
+            "scope": ["string", "punctuation.definition.string", "string.quoted"],
+            "settings": { "foreground": "#9ef0c0" }
+        },
+        {
+            "scope": ["constant.numeric", "constant.character.escape", "string.regexp"],
+            "settings": { "foreground": "#8fd0ff" }
+        },
+        {
+            "scope": ["keyword", "storage", "keyword.control", "storage.type", "keyword.operator.new"],
+            "settings": { "foreground": "#00ffea" }
+        },
+        {
+            "scope": ["storage.modifier", "keyword.operator", "punctuation.separator", "punctuation.terminator"],
+            "settings": { "foreground": "#a3d1cf" }
+        },
+        {
+            "scope": ["entity.name.function", "support.function", "meta.function-call", "variable.function"],
+            "settings": { "foreground": "#6bffe8" }
+        },
+        {
+            "scope": ["entity.name.type", "entity.name.class", "support.type", "support.class", "entity.name.namespace"],
+            "settings": { "foreground": "#7fe9ff" }
+        },
+        {
+            "scope": ["constant.language", "support.constant", "variable.language"],
+            "settings": { "foreground": "#b0fff0" }
+        },
+        {
+            "scope": ["entity.name.tag", "meta.tag", "entity.other.attribute-name", "punctuation.definition.tag"],
+            "settings": { "foreground": "#00d5c3" }
+        },
+        {
+            "scope": ["punctuation.section.embedded", "meta.embedded"],
+            "settings": { "foreground": "#00b3a4" }
+        },
+        {
+            "scope": ["markup.heading", "markup.heading entity.name"],
+            "settings": { "foreground": "#00ffea", "fontStyle": "bold" }
+        },
+        {
+            "scope": ["markup.bold"],
+            "settings": { "foreground": "#e0f2f1", "fontStyle": "bold" }
+        },
+        {
+            "scope": ["markup.italic"],
+            "settings": { "foreground": "#80cbc4", "fontStyle": "italic" }
+        },
+        {
+            "scope": ["markup.raw", "markup.inline.raw", "string.other.link"],
+            "settings": { "foreground": "#9ef0c0" }
+        },
+        {
+            "scope": ["invalid", "invalid.illegal"],
+            "settings": { "foreground": "#ffffff", "background": "#9f1239" }
+        }
+    ]
+}

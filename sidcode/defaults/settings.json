@@ -1,0 +1,25 @@
+{
+    "files.autoSave": "afterDelay",
+    "files.associations": {
+        "*.conf.sid": "nginx",
+        "*.conf.*": "nginx",
+        "*.sid": "NGINX"
+    },
+    "material-icon-theme.files.associations": {
+        "*.conf.sid": "nginx"
+    },
+    "workbench.iconTheme": "vscode-material-theme-icons-deepforest-arrows",
+    "window.customTitleBarVisibility": "windowed",
+    "window.autoDetectHighContrast": false,
+    "workbench.editor.centeredLayoutFixedWidth": true,
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.autoLockGroups": {
+        "default": true
+    },
+    "workbench.settings.applyToAllProfiles": [
+        "workbench.editor.centeredLayoutFixedWidth"
+    ],
+    "redhat.telemetry.enabled": false,
+    "sftp.downloadWhenOpenInRemoteExplorer": true
+}

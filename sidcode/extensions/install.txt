@@ -1,0 +1,39 @@
+# What Sid's editor is made of, apart from the two extensions SidCode builds into itself
+# (sir0sid.sftp-sid and sidcode-defaults).
+#
+# tools/install-extensions.sh installs everything below through the editor's own CLI, from
+# whichever gallery that editor is pointed at - Open VSX for SidCode and VSCodium. Anything
+# the gallery does not have (Pylance, above all) is reported and skipped, never silently
+# missing.
+#
+# sir0sid.sids-colours is deliberately absent: its four colour sets now live *inside*
+# sidcode-defaults, which is why the editor can carry his colours without an extra extension.
+
+# Language and tooling Sid actually uses
+devsense.composer-php-vscode
+devsense.profiler-php-vscode
+devsense.phptools-vscode
+devsense.intelli-php-vscode
+zobo.php-intellisense
+mtxr.sqltools
+bradlc.vscode-tailwindcss
+pranaygp.vscode-css-peek
+ecmel.vscode-html-css
+xabikos.javascriptsnippets
+wscats.html-snippets
+ahmadalli.vscode-nginx-conf
+
+# Python: Microsoft publishes the editor side of this to Open VSX. Pylance is the one that
+# only exists in Microsoft's own marketplace - see the note in README.md.
+ms-python.python
+ms-python.debugpy
+ms-python.vscode-python-envs
+ms-python.vscode-pylance
+
+# Microsoft's TypeScript preview
+ms-vscode.vscode-typescript-next
+
+# Themes and icons he installs himself - One Dark Pro is the one he pairs with his own colours
+zahidnazir.material-theme-twilight-wave
+zhuangtongfa.material-theme
+ahmadawais.shades-of-purple

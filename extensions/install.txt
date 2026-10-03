@@ -1,0 +1,44 @@
+# What Sid's editor is made of, apart from the two extensions SidCode builds into itself
+# (sir0sid.sftp-sid and sidcode-defaults).
+#
+# tools/install-extensions.sh installs everything below through the editor's own CLI, from
+# whichever gallery that editor is pointed at - Open VSX for SidCode and VSCodium. Anything
+# the gallery does not have (Pylance, above all) is reported and skipped, never silently
+# missing.
+#
+# sir0sid.sftp-sid, one of those two, is not in this list: it is Sid's own fork
+# of vscode-sftp, packaged as a .vsix, and installed by build.sh - not through a gallery. It
+# takes the newest sftp-sid-*.vsix it finds in this folder or in ../sids-sftp/, and checks the
+# copy it installs for the `menuBar/tools` entry that fills the Tools menu. An older one has
+# no such entry, and an empty Tools menu is left out of the menu bar altogether - a build that
+# looks finished and is not. So: package a current one in ../sids-sftp with
+#   npm install && npm run compile && npx @vscode/vsce package
+# and leave it there, or drop it in this folder and delete the older ones.
+#
+# sir0sid.sids-colours is deliberately absent: its four colour sets now live *inside*
+# sidcode-defaults, which is why the editor can carry his colours without an extra extension.
+
+# Language and tooling Sid actually uses.
+#
+# The languages themselves are built in now, from extensions/builtin.txt - Python, PHP, the web
+# linters, systemd and nginx. What is left here is what cannot be built into an editor that is
+# given to anyone: the proprietary language servers.
+devsense.composer-php-vscode
+devsense.profiler-php-vscode
+devsense.phptools-vscode
+devsense.intelli-php-vscode
+zobo.php-intellisense
+mtxr.sqltools
+pranaygp.vscode-css-peek
+ecmel.vscode-html-css
+xabikos.javascriptsnippets
+wscats.html-snippets
+
+# Python: the editor side, the debugger, a type checker and the linter are built in
+# (extensions/builtin.txt). Pylance is the one that only exists in Microsoft's own marketplace,
+# which is why pyright is the type checker SidCode ships - see README.md.
+
+# Themes and icons he installs himself - One Dark Pro is the one he pairs with his own colours
+zahidnazir.material-theme-twilight-wave
+zhuangtongfa.material-theme
+ahmadawais.shades-of-purple

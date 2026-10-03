@@ -1,0 +1,78 @@
+# SidCode: a Tools menu in the top level menu bar.
+#
+# The menu bar is Microsoft's, and an extension cannot add to the top of it - only to the
+# menus that are already there (menusExtensionPoint.ts lists the two that extensions may
+# reach). So the entry itself is a change to the editor's source, and this patch is it:
+#
+#   * MenubarToolsMenu, the menu id, kept beside the other menubar ids.
+#   * its registration on MenubarMainMenu, between Terminal and Help - the custom menu bar
+#     Linux and Windows draw is built from exactly those registrations, in `order`. Help and
+#     Preferences move down one place to leave the new slot where it belongs.
+#   * the id published to extensions as `menuBar/tools`, so an extension can put its own
+#     items inside Tools - which is what the SFTP extension's SFTP/FTP > Create uses.
+#
+# A rebuild is needed for this one: it is the editor's own code, not a setting.
+#
+# Known limit: macOS's native menu bar is assembled separately (platform/menubar) and does
+# not show it. Nothing breaks there; Tools is simply a Linux and Windows menu.
+diff --git a/src/vs/platform/actions/common/actions.ts b/src/vs/platform/actions/common/actions.ts
+--- a/src/vs/platform/actions/common/actions.ts
++++ b/src/vs/platform/actions/common/actions.ts
+@@ -141,6 +141,7 @@
+ 	static readonly MenubarSwitchGroupMenu = new MenuId('MenubarSwitchGroupMenu');
+ 	static readonly MenubarTerminalMenu = new MenuId('MenubarTerminalMenu');
+ 	static readonly MenubarTerminalSuggestStatusMenu = new MenuId('MenubarTerminalSuggestStatusMenu');
++	static readonly MenubarToolsMenu = new MenuId('MenubarToolsMenu');
+ 	static readonly MenubarViewMenu = new MenuId('MenubarViewMenu');
+ 	static readonly MenubarHomeMenu = new MenuId('MenubarHomeMenu');
+ 	static readonly OpenEditorsContext = new MenuId('OpenEditorsContext');
+diff --git a/src/vs/workbench/browser/parts/titlebar/menubar.contribution.ts b/src/vs/workbench/browser/parts/titlebar/menubar.contribution.ts
+--- a/src/vs/workbench/browser/parts/titlebar/menubar.contribution.ts
++++ b/src/vs/workbench/browser/parts/titlebar/menubar.contribution.ts
+@@ -68,13 +68,23 @@
+ });
+ 
+ MenuRegistry.appendMenuItem(MenuId.MenubarMainMenu, {
++	submenu: MenuId.MenubarToolsMenu,
++	title: {
++		value: 'Tools',
++		original: 'Tools',
++		mnemonicTitle: localize({ key: 'mTools', comment: ['&& denotes a mnemonic'] }, "T&&ools")
++	},
++	order: 8
++});
++
++MenuRegistry.appendMenuItem(MenuId.MenubarMainMenu, {
+ 	submenu: MenuId.MenubarHelpMenu,
+ 	title: {
+ 		value: 'Help',
+ 		original: 'Help',
+ 		mnemonicTitle: localize({ key: 'mHelp', comment: ['&& denotes a mnemonic'] }, "&&Help")
+ 	},
+-	order: 8
++	order: 9
+ });
+ 
+ MenuRegistry.appendMenuItem(MenuId.MenubarMainMenu, {
+@@ -85,5 +95,5 @@
+ 		mnemonicTitle: localize({ key: 'mPreferences', comment: ['&& denotes a mnemonic'] }, "&&Preferences")
+ 	},
+ 	when: IsMacNativeContext,
+-	order: 9
++	order: 10
+ });
+diff --git a/src/vs/workbench/services/actions/common/menusExtensionPoint.ts b/src/vs/workbench/services/actions/common/menusExtensionPoint.ts
+--- a/src/vs/workbench/services/actions/common/menusExtensionPoint.ts
++++ b/src/vs/workbench/services/actions/common/menusExtensionPoint.ts
+@@ -144,6 +144,11 @@
+ 		description: localize('menus.opy', "'Copy as' submenu in the top level Edit menu")
+ 	},
+ 	{
++		key: 'menuBar/tools',
++		id: MenuId.MenubarToolsMenu,
++		description: localize('menus.tools', "The Tools menu in the top level menu bar")
++	},
++	{
+ 		key: 'chat/input/status',
+ 		id: MenuId.ChatInputStatus,
+ 		description: localize('menus.chatInputStatus', "The status indicator area at the rightmost end of the toolbar shown beneath the chat input"),

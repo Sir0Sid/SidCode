@@ -1,0 +1,6 @@
+{
+  "name": "sidcode-server-${version}-${commit}-linux-${arch}.tar.gz",
+  "urlTemplate": "https://github.com/Sir0Sid/SidCode/releases/download/server-${version}/sidcode-server-${version}-${commit}-linux-${arch}.tar.gz",
+  "platform": "linux",
+  "arches": ["x64", "arm64"]
+}

@@ -1,0 +1,172 @@
+{
+  "name": "sidcode-defaults",
+  "displayName": "SidCode Defaults",
+  "description": "Sid's colours, settings and keybindings, as the defaults of SidCode.",
+  "publisher": "Sir0Sid",
+  "version": "1.3.1",
+  "engines": {
+    "vscode": "^1.64.2"
+  },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onCommand:sidcode.themes.any",
+    "onCommand:sidcode.theme.sid-s-bright-teal",
+    "onCommand:sidcode.theme.sid-s-dark-teal",
+    "onCommand:sidcode.theme.sid-s-midway-teal",
+    "onCommand:sidcode.theme.sid-s-soft-blue"
+  ],
+  "categories": [
+    "Themes"
+  ],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Sid's Bright Teal",
+        "uiTheme": "vs-dark",
+        "path": "./themes/Bright-Teal.theme.json"
+      },
+      {
+        "label": "Sid's Dark Teal",
+        "uiTheme": "vs-dark",
+        "path": "./themes/Dark-Teal.theme.json"
+      },
+      {
+        "label": "Sid's Midway Teal",
+        "uiTheme": "vs-dark",
+        "path": "./themes/Mid-Teal.theme.json"
+      },
+      {
+        "label": "Sid's Soft Blue",
+        "uiTheme": "vs-dark",
+        "path": "./themes/Soft-Blue.theme.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "sidcode.themes.any",
+        "title": "Any Others...",
+        "category": "Themes"
+      },
+      {
+        "command": "sidcode.theme.sid-s-bright-teal",
+        "title": "Sid's Bright Teal",
+        "category": "Themes"
+      },
+      {
+        "command": "sidcode.theme.sid-s-dark-teal",
+        "title": "Sid's Dark Teal",
+        "category": "Themes"
+      },
+      {
+        "command": "sidcode.theme.sid-s-midway-teal",
+        "title": "Sid's Midway Teal",
+        "category": "Themes"
+      },
+      {
+        "command": "sidcode.theme.sid-s-soft-blue",
+        "title": "Sid's Soft Blue",
+        "category": "Themes"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "sidcode.themes",
+        "label": "Themes"
+      },
+      {
+        "id": "sidcode.themes.sids",
+        "label": "Sid's Colours"
+      }
+    ],
+    "menus": {
+      "menuBar/tools": [
+        {
+          "submenu": "sidcode.themes",
+          "group": "navigation@2"
+        }
+      ],
+      "sidcode.themes": [
+        {
+          "submenu": "sidcode.themes.sids",
+          "group": "1_sids@1"
+        },
+        {
+          "command": "sidcode.themes.any",
+          "group": "2_any@1"
+        }
+      ],
+      "sidcode.themes.sids": [
+        {
+          "command": "sidcode.theme.sid-s-bright-teal",
+          "group": "1@1"
+        },
+        {
+          "command": "sidcode.theme.sid-s-dark-teal",
+          "group": "1@2"
+        },
+        {
+          "command": "sidcode.theme.sid-s-midway-teal",
+          "group": "1@3"
+        },
+        {
+          "command": "sidcode.theme.sid-s-soft-blue",
+          "group": "1@4"
+        }
+      ]
+    },
+    "configurationDefaults": {
+      "files.autoSave": "afterDelay",
+      "files.associations": {
+        "*.sid": "nginx",
+        "*.conf.sid": "nginx",
+        "*.conf.*": "nginx",
+        "nginx.conf": "nginx",
+        "**/sites-available/*": "nginx",
+        "**/sites-enabled/*": "nginx",
+        "**/conf.d/*.conf": "nginx",
+        "php-fpm.conf": "ini",
+        "*.pool.conf": "ini",
+        "*.service": "systemd-unit",
+        "*.socket": "systemd-unit",
+        "*.timer": "systemd-unit",
+        "*.target": "systemd-unit",
+        "*.mount": "systemd-unit",
+        "*.automount": "systemd-unit",
+        "*.path": "systemd-unit",
+        "*.slice": "systemd-unit",
+        "*.scope": "systemd-unit",
+        "*.device": "systemd-unit",
+        "*.swap": "systemd-unit",
+        "*.network": "systemd-network",
+        "*.netdev": "systemd-network",
+        "*.link": "systemd-network",
+        "*.container": "podman-quadlet",
+        "*.volume": "podman-quadlet",
+        "*.kube": "podman-quadlet"
+      },
+      "material-icon-theme.files.associations": {
+        "*.conf.sid": "nginx"
+      },
+      "workbench.iconTheme": "vscode-material-theme-icons-deepforest-arrows",
+      "window.customTitleBarVisibility": "windowed",
+      "window.autoDetectHighContrast": false,
+      "workbench.editor.centeredLayoutFixedWidth": true,
+      "workbench.editor.enablePreview": false,
+      "workbench.editor.enablePreviewFromQuickOpen": false,
+      "workbench.editor.autoLockGroups": {
+        "default": true
+      },
+      "workbench.settings.applyToAllProfiles": [
+        "workbench.editor.centeredLayoutFixedWidth"
+      ],
+      "redhat.telemetry.enabled": false,
+      "sftp.downloadWhenOpenInRemoteExplorer": true,
+      "update.mode": "none",
+      "remote.SSH.connectTimeout": 60,
+      "workbench.colorTheme": "Sid's Bright Teal",
+      "remote.SSH.serverDownloadUrlTemplate": "https://github.com/Sir0Sid/SidCode/releases/download/server-${version}/sidcode-server-${version}-${commit}-linux-${arch}.tar.gz",
+      "remote.SSH.serverVersion": "match"
+    },
+    "keybindings": []
+  }
+}
