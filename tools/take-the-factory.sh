@@ -38,20 +38,26 @@ TEXT
   exit 1
 fi
 
-version_of() {
-  node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).version)' "$1" 2>/dev/null || echo unknown
-}
-
-VERSION="$(version_of "${FROM}/package.json")"
 COMMIT="$(git -C "${FROM}" rev-parse --short HEAD 2>/dev/null || echo unknown)"
 TAKEN="$(date -u '+%Y-%m-%d %H:%M UTC')"
+
+# What this machinery builds, which is the fact worth writing down. VSCodium's own repository has no
+# package.json at its root: it records which VS Code it builds in `upstream/<quality>.json` - a tag
+# and a commit - and that file is also where the version it calls itself is worked out from.
+upstream_field() {
+  node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))[process.argv[2]] || "unknown")' \
+    "${FROM}/upstream/${VSCODE_QUALITY:-stable}.json" "$1" 2>/dev/null || echo unknown
+}
+
+VSCODE_TAG="$(upstream_field tag)"
+MS_COMMIT="$(upstream_field commit)"
 
 say() {
   echo "$@"
 }
 
 say "taking the factory from ${FROM}"
-say "  VSCodium ${VERSION} (${COMMIT})"
+say "  VSCodium (${COMMIT}), building VS Code ${VSCODE_TAG} (${MS_COMMIT})"
 
 rm -rf "${FACTORY}"
 mkdir -p "${FACTORY}"
@@ -66,6 +72,7 @@ tar --warning=no-file-changed \
   --exclude='./VSCode-linux-*' --exclude='./VSCodium-linux-*' \
   --exclude='./VSCode-darwin*' --exclude='./VSCode-win32*' \
   --exclude='./.git' \
+  --exclude='./patches/user/*.patch' \
   --exclude='*.tar.gz' \
   -czf /tmp/sidcode-factory.tar.gz -C "${FROM}" .
 
@@ -89,11 +96,23 @@ find "${FACTORY}" -type f \
   -not -path '*/node_modules/*' > /tmp/sidcode-factory-files.txt
 
 while IFS= read -r file; do
-  if grep -q 'microsoft/vscode' "${file}"; then
+  if grep -q -i 'microsoft/vscode' "${file}"; then
     say "  rewriting the source fetch in ${file#${FACTORY}/}:"
-    grep -n 'microsoft/vscode' "${file}" | sed 's/^/    /'
-    sed -i 's#https://github\.com/microsoft/vscode#__SIDCODE_VSCODE_REPO__#g; s#microsoft/vscode\.git#__SIDCODE_VSCODE_REPO__#g; s#microsoft/vscode#__SIDCODE_VSCODE_REPO__#g' "${file}"
-    sed -i "s#__SIDCODE_VSCODE_REPO__#${VSCODE_REPO}#g" "${file}"
+    grep -n -i 'microsoft/vscode' "${file}" | sed 's/^/    /'
+    # Case-insensitively, and in node: the line that actually fetches the source says
+    # `Microsoft/vscode`, with capitals, and a case-sensitive pass walks straight past the one line
+    # the whole exercise is about. Node is here anyway - the build needs it.
+    node -e '
+const fs = require("fs");
+const file = process.argv[1];
+const url = process.argv[2];
+const before = fs.readFileSync(file, "utf8");
+// The whole URL, domain included, when there is one: their line reads
+// `https://github.com/Microsoft/vscode.git`, so replacing only the path would leave the domain
+// in front of the replacement and the result would be `https://github.com/https://github.com/...`.
+const after = before.replace(/(https?:\/\/github\.com\/)?Microsoft\/vscode(\.git)?/gi, url);
+if (after !== before) { fs.writeFileSync(file, after); }
+' "${file}" "${VSCODE_REPO}"
     CHANGED_LINES="${CHANGED_LINES}${file#${FACTORY}/}
 "
   fi
@@ -111,7 +130,8 @@ PREPARE_HINT="$(grep -n 'prepare_vscode\|SHOULD_BUILD' "${FACTORY}/dev/build.sh"
 REWRITTEN="${CHANGED_LINES:-nothing found - no line naming the Microsoft repository was in the copy}"
 
 {
-  echo "taken-from   VSCodium ${VERSION} (${COMMIT})"
+  echo "taken-from   VSCodium ${COMMIT}"
+  echo "builds       VS Code ${VSCODE_TAG} (${MS_COMMIT})"
   echo "taken-on     ${TAKEN}"
   echo "vscode-from  ${VSCODE_REPO}"
   echo "rewritten    ${REWRITTEN}"

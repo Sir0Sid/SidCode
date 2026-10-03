@@ -110,6 +110,23 @@ Repository names are case-insensitive to GitHub, so a repository actually called
 browser changes. Rename the repository to `SidCode` if the address bar should read like the product;
 nothing in this folder needs to change either way.
 
+## The factory: the machinery in this repository
+
+With `factory/` in place, `build.sh` copies it out to `build/vscodium`, fetches nothing for the
+machinery, and the fetch of Microsoft's source comes from Sid's own fork. `factory/FACTORY` records
+which VSCodium it was taken from.
+
+```bash
+./tools/take-the-factory.sh                              from build/vscodium
+SIDCODE_FACTORY_FROM=~/sid/vscodium-source-<commit> ./tools/take-the-factory.sh
+SIDCODE_VSCODE_REPO=https://github.com/Sir0Sid/vscode ./tools/take-the-factory.sh
+node tools/check-factory.mjs                             is it here, is it Sid's, does the build use it
+```
+
+Moving to a newer VS Code is one command - take a newer factory - and then `./build.sh`, which
+dry-runs every patch against the source before it compiles: a patch that no longer fits stops the
+build in seconds and names itself, instead of at the end of an hour.
+
 ## Projects on a host, users on their own PCs
 
 The remote half: whoever has a login on your host installs SidCode and opens the project there.
