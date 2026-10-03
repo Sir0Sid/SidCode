@@ -1,11 +1,21 @@
 # SidCode
 
-Sid's own editor: VSCodium's build pipeline, with SidCode's name on it and Sid's own things
-built in rather than installed afterwards.
+An editor of Sid's own: the same source VS Code is built from - Microsoft's `vscode`, MIT - built
+and branded here as SidCode, with Sid's colours, menus and features inside it rather than installed
+into it afterwards.
 
-VSCodium is not a fork - it is a set of scripts that build Microsoft's `vscode` into
-freely-licensed binaries. SidCode wraps those scripts and adds two steps of its own: branding,
-and extensions that ship with the editor instead of being added to it.
+That is the whole of the difference from the build it comes from, and it is a real one. The editor,
+search, source control, terminal, debugger, tasks, the extension host and every language feature that
+ships with VS Code are in SidCode **by construction**, because it is that editor rebuilt - not an
+editor with a pile of plugins bolted to it.
+
+**The line it comes down is worth knowing, and it is this.** VSCodium is a set of scripts that build
+Microsoft's `vscode` into freely-licensed binaries without Microsoft's branding or telemetry, and
+SidCode wraps *those* scripts: `build.sh` clones that repository, merges its `product.json` with
+`branding/product.sidcode.json`, drops `patches/` into its `patches/user/`, and runs its build. So a
+rebuild is a pinned VSCodium version plus the two steps that are ours - branding, and extensions that
+belong to the editor. That is why the version is pinned, and why a copy of the checkout is worth
+keeping.
 
 ```
 branding/product.sidcode.json   the fields SidCode overrides: name, CLI command, data folder
@@ -93,7 +103,7 @@ that, and is how the Tools menu exists.
 `./build.sh --brand-only <app dir>` re-brands an app that is already built and re-installs the
 built-ins in seconds, which is the quick loop while shaping colours.
 
-Three checks, one per half of the product, and each of them catches a failure that is invisible in
+Five checks, one per half of the product, and each of them catches a failure that is invisible in
 the editor until somebody clicks the thing that does not work:
 
 ```bash
@@ -101,6 +111,7 @@ node tools/check-branding.mjs           the name, the folder, the links, and whi
 node tools/check-provenance.mjs         every built-in extension: MIT, recorded, upstream, still pinned
 node tools/check-themes-menu.mjs         the Themes menu: every colour set reachable, the runtime agrees
 node tools/check-remote.mjs              the remote half: the settings and the server artifact agree
+node tools/check-factory.mjs             the machinery is here, is Sid's, and the build uses it
 ```
 
 The update check is **off** (`update.mode: none`), and that is deliberate: this build would otherwise
@@ -122,6 +133,37 @@ keeps a copy of the checkout - VSCodium's source with Microsoft's `vscode` insid
 alongside - beside this folder, named with the commit it is at. With that copy unpacked as
 `build/vscodium`, a rebuild of the same pinned tag fetches **nothing** and says so; a copy you hold
 is the only thing that answers "what if it is not there any more".
+
+### The factory: the machinery in this repository
+
+A saved copy is still a copy of *their* machinery. The factory is that machinery **taken into this
+repository**, so that cloning SidCode and running `build.sh` builds SidCode with nothing fetched
+from anybody else's repository:
+
+```bash
+./tools/take-the-factory.sh
+```
+
+Run it against a checkout (`build/vscodium`, or the copy `save-source.sh` keeps). It copies their
+build scripts, their patch set and their `product.json` into `factory/` - everything except
+Microsoft's source, the installed packages and the built app - and it **rewrites the fetch of
+Microsoft's source to Sid's own fork of it**, printing the line it changed. `factory/FACTORY` records
+the VSCodium version, the commit, the repository it came from and the date, so what is in the folder
+is answerable from the folder.
+
+`build.sh` then copies `factory/` out to `build/vscodium` and builds there, and fetches nothing for
+the machinery at all. The factory in the repository stays pristine, and the checkout stays
+disposable - the same rule the patches already follow.
+
+**The honest cost:** from now on, their patch set is carried here. Moving forward is one command
+(a newer checkout, `take-the-factory.sh` again), and the thing that makes it safe rather than
+expensive is in `build.sh` already: **every patch is dry-run against the source before the compile
+starts**, so a patch that no longer fits says so in seconds, by name, instead of at the end of an
+hour - or worse, a build that succeeds without it.
+
+`node tools/check-factory.mjs` asks the questions that make that true: the factory is here, it
+carries its record, nothing in it still reaches for Microsoft's repository, and `build.sh` prefers it
+to a fetch.
 
 ## Everyone on their own PC, one project on your host
 
@@ -309,10 +351,10 @@ current, and nothing in the editor says so. `--in-place` settles it for good -
 
 ## What SidCode is made of
 
-The application **is** VS Code: VSCodium's scripts build Microsoft's own source, so the editor,
-search, source control, terminal, debugger, tasks, the extension host and every language feature
-shipped with VS Code are in SidCode by construction. Extensions are additions on top of that,
-not the editor itself.
+The application **is** VS Code - Microsoft's own open-source `vscode`, built and branded here - so
+the editor, search, source control, terminal, debugger, tasks, the extension host and every language
+feature shipped with VS Code are in SidCode by construction. Extensions are additions on top of
+that, not the editor itself.
 
 Three groups, and the middle one is the interesting one:
 

@@ -40,6 +40,7 @@ VCODIUM_REF=1.135.07000 ./build.sh                              a newer release
 VCODIUM_REPO=https://github.com/Sir0Sid/vscodium ./build.sh     from a fork or mirror
 SIDCODE_BUILD_DIR=~/sid/build ./build.sh                        more than one build folder
 ./tools/save-source.sh                                          keep the source you built
+./tools/take-the-factory.sh                                     the machinery into factory/ (see below)
 ```
 
 With the pinned tag already checked out, a rebuild fetches nothing - which is what the saved copy
@@ -193,6 +194,7 @@ node tools/check-themes-menu.mjs        checks the Themes menu: every colour set
                                         every entry a command, the runtime and the manifest agree
 node tools/check-branding.mjs           checks the name, the folder, the links, and the services it uses
 node tools/check-provenance.mjs         checks every built-in is MIT, recorded and still at its pin
+node tools/check-factory.mjs            checks the factory is here, is Sid's, and the build uses it
 ./build.sh --brand-only <app>           puts the result into an app already built
 ```
 

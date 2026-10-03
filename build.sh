@@ -588,6 +588,48 @@ TEXT
   echo "  prints that URL for this build."
 }
 
+# Our patches, checked against the source before the compile rather than in the middle of it.
+#
+# Their build applies them from `patches/user/` after it has fetched and de-branded Microsoft's
+# source, so the tree they are meant for is `vscode/` inside the checkout - and that only exists once
+# their prepare step has run. When it does exist, this is the same `git apply` they will do, a
+# second earlier: a patch that no longer fits says so in seconds, naming the patch, instead of at the
+# end of an hour. When it does not exist yet there is nothing to check against, and the Tools-menu
+# check after the build is the backstop it already is.
+preflight_own_patches() {
+  local patch
+  local failed="no"
+
+  if [ ! -d "${VSCODIUM}/vscode" ]; then
+    say "our patches: no prepared source here to check them against yet"
+    echo "  their build fetches it during this run, and check_tools_menu runs after the build"
+    return 0
+  fi
+
+  say "checking our patches against the source"
+
+  for patch in "${ROOT}"/patches/*.patch; do
+    if [ ! -f "${patch}" ]; then
+      continue
+    fi
+
+    if git -C "${VSCODIUM}/vscode" apply --check "${patch}" 2>/dev/null; then
+      echo "  fits: $(basename "${patch}")"
+    else
+      echo "  DOES NOT FIT: $(basename "${patch}")" >&2
+      failed="yes"
+    fi
+  done
+
+  if [ "${failed}" = "yes" ]; then
+    echo >&2
+    echo "  The patches above no longer apply to this source, so this build would fail - or worse," >&2
+    echo "  succeed without them. The source is at VSCodium ${VCODIUM_REF}; run" >&2
+    echo "  ${ROOT}/tools/make-patch.sh against an editor built from it to make them fit again." >&2
+    return 1
+  fi
+}
+
 usage_text() {
   echo "usage: ./build.sh [--brand-only <app dir>] [--server] [--no-download]" >&2
   echo "  an app folder is one holding resources/app/ - usually build/vscodium/VSCode-linux-x64," >&2
@@ -693,6 +735,18 @@ for tool in git node yarn; do
   command -v "${tool}" >/dev/null 2>&1 || { echo "SidCode's build needs ${tool}, which is not on PATH" >&2; exit 1; }
 done
 
+# The factory first. When the machinery is in this repo - taken there by
+# `tools/take-the-factory.sh` - it is copied out and used, and nothing is fetched for it: the same
+# idea as the pinned ref below, extended from the checkout to the scripts that make it.
+FACTORY="${ROOT}/factory"
+if [ -d "${FACTORY}/dev" ]; then
+  say "the factory in this repo (${FACTORY}) - nothing fetched for the machinery"
+  mkdir -p "${VSCODIUM}"
+  # Copied over whatever is already here rather than replacing the folder: a built app sits beside
+  # this checkout, and taking an hour of building away to copy some scripts is a poor trade.
+  tar --warning=no-file-changed -czf - -C "${FACTORY}" . | tar -xzf - -C "${VSCODIUM}"
+  sed -n '1p' "${FACTORY}/FACTORY" 2>/dev/null | sed 's/^/  /'
+else
 say "VSCodium source (${VCODIUM_REF} from ${VCODIUM_REPO})"
 if [ -d "${VSCODIUM}/.git" ]; then
   # A pinned tag or commit that is already checked out needs nothing from the network, and that is
@@ -717,6 +771,7 @@ else
   mkdir -p "${WORK}"
   git clone --depth 1 --branch "${VCODIUM_REF}" "${VCODIUM_REPO}" "${VSCODIUM}"
 fi
+fi
 
 say "branding it as SidCode"
 node "${ROOT}/tools/merge-product.mjs" "${VSCODIUM}"
@@ -725,6 +780,8 @@ cp "${ROOT}/branding/product.json" "${VSCODIUM}/product.json"
 
 say "our own patches"
 apply_own_patches
+
+preflight_own_patches || exit 1
 
 if [ -n "${SERVER_MODE}" ]; then
   build_server_component
@@ -763,6 +820,12 @@ if APP_DIR="$(find_app_dir)"; then
     DONE_NOTE=""
   fi
 
+BUILT_FROM="It was built from VSCodium ${VCODIUM_REF} (${VCODIUM_REPO}) at $(git -C "${VSCODIUM}" rev-parse --short HEAD 2>/dev/null || echo 'an unknown commit')."
+
+if [ -d "${FACTORY}/dev" ]; then
+  BUILT_FROM="It was built from the factory in this repo: $(sed -n '1p' "${FACTORY}/FACTORY" | tr -s ' ')"
+fi
+
   cat <<TEXT
 
 == done${DONE_NOTE}
@@ -770,7 +833,7 @@ if APP_DIR="$(find_app_dir)"; then
 The app is at ${APP_DIR}
 Run it with: ${APP_DIR}/bin/sidcode
 
-It was built from VSCodium ${VCODIUM_REF} (${VCODIUM_REPO}) at $(git -C "${VSCODIUM}" rev-parse --short HEAD 2>/dev/null || echo 'an unknown commit').
+${BUILT_FROM}
 To keep that source, so that a rebuild never depends on it still being there:
 
   ${ROOT}/tools/save-source.sh
