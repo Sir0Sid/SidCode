@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SidCode as a desktop application, in the format the desktop's own software lists read.
+
+  This is what makes SidCode an *app* in GNOME Software and Ubuntu's App Center rather than a
+  package with a launcher: the name, the summary, the paragraphs, the screenshots, the categories,
+  and which window to raise when somebody clicks Launch. Without it the entry exists and looks
+  empty; with it the app has a page.
+
+  Two things are filled in when a package is built, and they are the only two that change per
+  build: the version and the date, in <releases> below. `tools/make-deb.sh` substitutes them, so
+  what is in the package is what the About box says.
+
+  The images are URLs, which AppStream requires and which is why the screenshots are kept here in
+  the repository as well as inside the package: they are read from the copy on the branch. They are
+  16:9 and nothing is cropped - the window is padded to the shape the format asks for.
+-->
+<component type="desktop-application">
+  <id>sidcode.desktop</id>
+  <launchable type="desktop-id">sidcode.desktop</launchable>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <name>SidCode</name>
+  <summary>An editor Sid built for himself, and kept for anyone else</summary>
+
+  <description>
+    <p>
+      SidCode is an editor for people who work on servers: nginx configs, systemd units, PHP,
+      Python, and the SFTP and SSH sessions that go with them. It is built from Microsoft's
+      VS Code source, through VSCodium's build scripts, with its own branding, colours, defaults
+      and patches.
+    </p>
+    <p>
+      What is built in is the work: Python, PHP and their language servers, ruff, pyright, eslint,
+      prettier and stylelint, Tailwind, systemd units, nginx, and a material icon theme. A Tools
+      menu of its own carries the colour sets, the SFTP client's entry, and the update check.
+    </p>
+    <p>
+      The remote half is the point of it: connect to a host and the project stays there, with the
+      terminals and the language servers running on the host rather than on the machine in front of
+      you - the editor becomes the window onto somebody else's server.
+    </p>
+  </description>
+
+  <categories>
+    <category>Development</category>
+    <category>TextEditor</category>
+    <category>IDE</category>
+  </categories>
+
+  <keywords>
+    <keyword>editor</keyword>
+    <keyword>development</keyword>
+    <keyword>code</keyword>
+    <keyword>nginx</keyword>
+    <keyword>systemd</keyword>
+    <keyword>ssh</keyword>
+    <keyword>sftp</keyword>
+  </keywords>
+
+  <url type="homepage">https://sidcode.dev</url>
+  <url type="vcs-browser">https://github.com/Sir0Sid/SidCode</url>
+  <url type="bugtracker">https://github.com/Sir0Sid/SidCode/issues</url>
+
+  <developer id="dev.sidcode">
+    <name>Simon G.</name>
+  </developer>
+
+  <content_rating type="oars-1.1"/>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>The window it opens on, in Sid's own colours</caption>
+      <image type="source">https://raw.githubusercontent.com/Sir0Sid/SidCode/main/branding/appdata/screenshots/sidcode-welcome.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The menu bar, with the Tools menu SidCode adds</caption>
+      <image type="source">https://raw.githubusercontent.com/Sir0Sid/SidCode/main/branding/appdata/screenshots/sidcode-menus.png</image>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="@VERSION@" date="@DATE@"/>
+  </releases>
+</component>
