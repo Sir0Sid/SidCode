@@ -1,8 +1,8 @@
 {
   "version": "1.135.06662",
   "url": "https://github.com/Sir0Sid/SidCode/releases/download/v1.135.06662/sidcode_1.135.06662_amd64.deb",
-  "sha256": "8f5543a41fc4d333553271f3cb15d54276d4c62456fb4b63da5522ffa42cd84b",
-  "size": 187917776,
+  "sha256": "a754afe699d5260543df8f3b52f8b7939e895ff7408a2226fd3beebb109a6956",
+  "size": 187929564,
   "page": "https://github.com/Sir0Sid/SidCode/releases/tag/v1.135.06662",
   "notes": "Server Manager, Tools menu, updater, app page"
 }
