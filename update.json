@@ -1,8 +1,8 @@
 {
-  "version": "2.0.0",
-  "url": "https://github.com/Sir0Sid/SidCode/releases/download/v2.0.0/sidcode_2.0.0_amd64.deb",
-  "sha256": "7e871a74d0d42c42924781c6d47b4bc957762e4790e8da91c7efd004de249757",
-  "size": 187929080,
-  "page": "https://github.com/Sir0Sid/SidCode/releases/tag/v2.0.0",
-  "notes": "SidCode 2.0.0: its own version number, and the About box"
+  "version": "1.135.06700",
+  "url": "https://github.com/Sir0Sid/SidCode/releases/download/v1.135.06700/sidcode_1.135.06700_amd64.deb",
+  "sha256": "728d199734247bf9852c361206635b6195011dc760f3b6d1cdc2a1999a37948f",
+  "size": 187915532,
+  "page": "https://github.com/Sir0Sid/SidCode/releases/tag/v1.135.06700",
+  "notes": "SidCode Teams: the Projects view, and the New Project form"
 }
